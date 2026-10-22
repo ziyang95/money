@@ -32,3 +32,6 @@
 
 ## 缩放支持
 页面 viewport 已明确允许用户缩放（user-scalable=yes，maximum-scale=5）。在 Safari 中可用双指捏合缩放；如果以“添加到主屏幕”的独立模式打开，iOS 对网页缩放的支持可能与 Safari 标签页不同，建议用 Safari 标签页打开体验缩放。
+
+
+本版本更新：统计页面改为分类饼图；记账弹窗和页面增加横向溢出限制，减少 iPhone 上记一笔页面左右拖动；继续禁止双指缩放。Service Worker 缓存版本更新为 v4。
