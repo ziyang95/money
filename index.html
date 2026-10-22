@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#f5f5fa">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="记账">
+<meta name="description" content="无广告、离线优先的个人记账工具">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<title>记账</title>
+<style>
+:root{color-scheme:light dark;--bg:#f4f5fa;--card:#fff;--text:#171923;--muted:#737789;--line:#e6e8ef;--accent:#5655d9;--accent2:#7775f3;--good:#12805c;--bad:#c45243;--soft:#eeefff;--shadow:0 8px 28px rgba(31,35,65,.07)}
+@media(prefers-color-scheme:dark){:root{--bg:#111218;--card:#1b1d26;--text:#f4f5fb;--muted:#a1a5b6;--line:#303341;--accent:#a5a3ff;--accent2:#c0beff;--good:#60d6a6;--bad:#ff9386;--soft:#2a2945;--shadow:0 8px 28px rgba(0,0,0,.2)}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC",sans-serif;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent2);outline-offset:2px}
+.app{max-width:560px;min-height:100dvh;margin:auto;padding:env(safe-area-inset-top) 16px calc(90px + env(safe-area-inset-bottom))}
+header{display:flex;align-items:center;justify-content:space-between;padding:15px 2px 16px}.brand{font-size:27px;font-weight:800;letter-spacing:-.7px}.brand small{display:block;color:var(--muted);font-size:12px;font-weight:500;letter-spacing:0;margin-top:3px}
+.iconbtn{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:14px;width:44px;height:44px;font-size:20px}
+.monthbar{display:flex;align-items:center;justify-content:space-between;margin:2px 0 13px}.monthbar button{border:0;background:transparent;color:var(--text);padding:8px 10px;font-size:20px}.monthlabel{font-weight:700;font-size:15px}
+.hero{border-radius:27px;padding:22px;color:white;background:linear-gradient(135deg,#5755d9,#7774ef 60%,#9b91f7);box-shadow:var(--shadow);position:relative;overflow:hidden}.hero:after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;background:#fff;opacity:.08;right:-60px;top:-65px}.eyebrow{font-size:13px;color:#ffffffcc}.balance{font-size:clamp(30px,8vw,38px);font-weight:800;letter-spacing:-1px;margin:8px 0 22px;overflow-wrap:anywhere}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:12px}.metric{background:#ffffff1c;border:1px solid #ffffff25;border-radius:17px;padding:13px}.metric span{display:block;font-size:12px;color:#ffffffd0;margin-bottom:7px}.metric strong{font-size:17px;overflow-wrap:anywhere}
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:15px 0 24px}.quick button{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:18px;padding:15px;text-align:left;display:flex;gap:11px;align-items:center;font-weight:700;box-shadow:var(--shadow)}.quick .bubble{width:39px;height:39px;border-radius:13px;display:grid;place-items:center;background:var(--soft);color:var(--accent);font-size:21px}.sectionhead{display:flex;justify-content:space-between;align-items:center;margin:8px 2px 12px}.sectionhead h2{font-size:19px;margin:0}.subtle{color:var(--muted);font-size:12px}
+.list{background:var(--card);border:1px solid var(--line);border-radius:22px;overflow:hidden}.dayhead{font-size:12px;color:var(--muted);font-weight:700;padding:13px 15px 5px;background:var(--card)}.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line)}.item:last-child{border-bottom:0}.caticon{width:43px;height:43px;border-radius:15px;background:var(--soft);display:grid;place-items:center;font-size:19px;flex-shrink:0}.itemmain{min-width:0;flex:1}.itemtitle{font-weight:650;font-size:14px}.itemnote{font-size:12px;color:var(--muted);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.amount{font-weight:750;font-size:15px;white-space:nowrap}.income{color:var(--good)}.expense{color:var(--text)}
+.empty{padding:35px 20px;text-align:center;color:var(--muted);font-size:14px}.empty .emoji{font-size:35px;margin-bottom:10px}
+.tabs{position:fixed;z-index:5;bottom:0;left:0;right:0;padding:8px 16px calc(8px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(20px);border-top:1px solid var(--line)}.tabrow{max-width:560px;margin:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.tab{border:0;background:transparent;color:var(--muted);padding:7px 4px;border-radius:13px;font-size:11px;font-weight:600}.tab span{display:block;font-size:20px;margin-bottom:3px}.tab.active{background:var(--soft);color:var(--accent)}
+.view{display:none}.view.active{display:block}.panel{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:17px;margin-bottom:13px}.panel h3{font-size:15px;margin:0 0 14px}.seg{display:grid;grid-template-columns:1fr 1fr;gap:5px;background:var(--bg);padding:4px;border-radius:13px;margin-bottom:15px}.seg button{border:0;background:transparent;color:var(--muted);padding:10px;border-radius:10px;font-weight:700}.seg button.selected{background:var(--card);color:var(--accent);box-shadow:0 2px 7px #0000000d}
+.barrow{margin:14px 0}.barlabel{display:flex;justify-content:space-between;gap:10px;font-size:13px;margin-bottom:7px}.track{height:7px;background:var(--soft);border-radius:10px;overflow:hidden}.fill{height:100%;background:var(--accent);border-radius:10px}
+.settingsrow{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}.settingsrow:last-child{border-bottom:0}.settingsrow .symbol{font-size:20px;width:28px;text-align:center}.settingsrow .grow{flex:1}.settingsrow strong{display:block;font-size:14px}.settingsrow small{display:block;color:var(--muted);font-size:12px;margin-top:4px;line-height:1.5}
+.primary{border:0;border-radius:15px;background:var(--accent);color:white;font-weight:750;padding:14px 18px;width:100%}.secondary{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:13px;padding:11px 13px}.danger{color:var(--bad)}
+dialog{border:0;padding:0;background:var(--card);color:var(--text);border-radius:26px;width:min(560px,100%);max-width:560px;max-height:min(90dvh,850px);margin:auto 0 0;box-shadow:0 -12px 50px #0002}dialog::backdrop{background:#0007;backdrop-filter:blur(3px)}dialog[open]{animation:slide .18s ease-out}@keyframes slide{from{transform:translateY(25px);opacity:.6}to{transform:translateY(0);opacity:1}}.sheet{padding:20px 18px calc(18px + env(safe-area-inset-bottom));max-height:90dvh;overflow:auto}.sheethead{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.sheethead h2{margin:0;font-size:20px}.close{border:0;background:var(--bg);color:var(--text);border-radius:50%;width:36px;height:36px;font-size:20px}
+.field{margin:13px 0}.field label{display:block;color:var(--muted);font-size:12px;font-weight:650;margin-bottom:7px}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:13px;background:var(--bg);color:var(--text);padding:13px;min-height:46px}.amountinput{font-size:31px!important;font-weight:800;letter-spacing:-.5px}.categorygrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.category{border:1px solid var(--line);border-radius:13px;background:var(--bg);color:var(--text);padding:10px 3px;font-size:12px}.category span{display:block;font-size:20px;margin-bottom:5px}.category.selected{border-color:var(--accent);background:var(--soft);color:var(--accent);font-weight:750}
+.toast{position:fixed;z-index:10;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#22242d;color:white;border-radius:13px;padding:11px 16px;font-size:13px;max-width:90%;display:none}
+
+.account-summary{border-radius:22px;padding:19px;background:linear-gradient(135deg,#168b75,#36b89a);color:#fff;margin-bottom:14px;box-shadow:var(--shadow)}.account-summary .eyebrow{color:#ffffffd0}.account-total{font-size:30px;font-weight:800;margin:7px 0 3px;overflow-wrap:anywhere}.account-grid{display:grid;gap:10px}.account-card{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:19px;padding:14px}.account-icon{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;background:var(--soft);font-size:22px;flex-shrink:0}.account-main{min-width:0;flex:1}.account-name{font-size:14px;font-weight:750}.account-meta{font-size:11px;color:var(--muted);margin-top:4px}.account-balance{font-size:15px;font-weight:800;text-align:right;overflow-wrap:anywhere}.account-actions{display:flex;gap:7px;margin-top:8px;justify-content:flex-end}.tinybtn{border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:9px;padding:6px 9px;font-size:11px}.account-add{margin-top:12px}.account-note{font-size:12px;line-height:1.65;color:var(--muted);margin-top:12px}.field select{appearance:auto}
+@media(min-width:600px){body{padding:18px 0}.app{border:1px solid var(--line);border-radius:30px;min-height:calc(100dvh - 36px);padding-bottom:100px}.tabs{left:50%;right:auto;transform:translateX(-50%);width:min(560px,100%);border:1px solid var(--line);border-bottom:0;border-radius:20px 20px 0 0}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="brand">记账<small>把每一笔，都记得清楚</small></div><button class="iconbtn" id="topAdd" aria-label="新增账单">＋</button></header>
+<main>
+<section class="view active" id="view-home">
+<div class="monthbar"><button id="prevMonth" aria-label="上个月">‹</button><div class="monthlabel" id="monthLabel"></div><button id="nextMonth" aria-label="下个月">›</button></div>
+<div class="hero"><div class="eyebrow">本月结余</div><div class="balance" id="balance">¥0.00</div><div class="metrics"><div class="metric"><span>↙ 本月收入</span><strong id="income">¥0.00</strong></div><div class="metric"><span>↗ 本月支出</span><strong id="expense">¥0.00</strong></div></div></div>
+<div class="quick"><button id="quickExpense"><span class="bubble">−</span><span>记一笔支出</span></button><button id="quickIncome"><span class="bubble">＋</span><span>记录收入</span></button></div>
+<div class="sectionhead"><h2>账单明细</h2><span class="subtle" id="count">0 笔</span></div><div id="transactions" class="list"></div>
+</section>
+<section class="view" id="view-stats">
+<div class="monthbar"><button id="statsPrev">‹</button><div class="monthlabel" id="statsMonthLabel"></div><button id="statsNext">›</button></div>
+<div class="panel"><div class="seg"><button id="statsExpense" class="selected">支出分析</button><button id="statsIncome">收入分析</button></div><div class="subtle">本月合计</div><div id="statsTotal" class="balance" style="font-size:30px;margin:8px 0 4px">¥0.00</div><div class="subtle">按分类统计</div></div>
+<div class="panel"><h3>分类排行</h3><div id="categoryStats"></div></div>
+</section>
+<section class="view" id="view-accounts">
+<div class="sectionhead"><h2>我的账户</h2><span class="subtle" id="accountCount">4 个账户</span></div>
+<div class="account-summary"><div class="eyebrow">所有账户总余额</div><div class="account-total" id="accountsTotal">¥0.00</div><div class="eyebrow">余额 = 初始余额 + 收入 − 支出</div></div>
+<div id="accountList" class="account-grid"></div>
+<button class="primary account-add" id="addAccountBtn">＋ 添加账户</button>
+<p class="account-note">微信、支付宝、银行卡等账户余额根据你录入的初始余额和每笔收支自动计算。初始余额请填写开始使用记账时该账户已有的金额。历史账单因原来没有账户信息，会单独归入“历史账单（未指定）”，避免错误计入某个支付账户。</p>
+</section>
+<section class="view" id="view-settings">
+<div class="panel"><h3>偏好与数据</h3>
+<div class="settingsrow"><span class="symbol">🔒</span><div class="grow"><strong>本地保存</strong><small>账单只保存在当前浏览器的本机存储中，不会自动上传。</small></div></div>
+<div class="settingsrow"><span class="symbol">🌗</span><div class="grow"><strong>跟随系统外观</strong><small>自动适配 iPhone 的浅色或深色模式。</small></div></div>
+<div class="settingsrow"><span class="symbol">🚫</span><div class="grow"><strong>无广告、无追踪</strong><small>页面没有广告 SDK、统计 SDK 或外部字体请求。</small></div></div>
+<div class="settingsrow"><span class="symbol">📴</span><div class="grow"><strong>离线优先</strong><small>部署并首次打开后，核心记账和浏览功能无需联网；浏览器清除网站数据可能导致账单丢失。</small></div></div>
+</div>
+<div class="panel"><h3>数据管理</h3><button class="secondary" id="exportBtn" style="width:100%;margin-bottom:10px">导出 CSV 账单</button><button class="secondary" id="backupBtn" style="width:100%;margin-bottom:10px">下载 JSON 备份</button><button class="secondary" id="importBtn" style="width:100%;margin-bottom:10px">从 JSON 恢复备份</button><input type="file" id="importFile" accept=".json,application/json" hidden><button class="secondary danger" id="clearBtn" style="width:100%">清空所有账单</button></div>
+<div class="panel"><h3>关于</h3><div class="subtle">记账 · 网页版 1.1.0（多账户）</div><p class="subtle" style="line-height:1.7">这是可添加到 iPhone 主屏幕的网页应用，不是原生 iOS App，也不是 TestFlight 版本。</p></div>
+</section>
+</main>
+</div>
+<nav class="tabs" aria-label="主导航"><div class="tabrow" style="grid-template-columns:repeat(4,1fr)"><button class="tab active" data-tab="home"><span>▤</span>账单</button><button class="tab" data-tab="accounts"><span>▣</span>账户</button><button class="tab" data-tab="stats"><span>◔</span>统计</button><button class="tab" data-tab="settings"><span>⚙</span>设置</button></div></nav>
+<dialog id="addDialog"><form class="sheet" id="entryForm"><div class="sheethead"><h2>记一笔</h2><button class="close" type="button" id="closeDialog" aria-label="关闭">×</button></div>
+<div class="seg"><button type="button" id="typeExpense" class="selected">支出</button><button type="button" id="typeIncome">收入</button></div>
+<div class="field"><label for="amountInput">金额</label><input id="amountInput" class="amountinput" type="text" inputmode="decimal" placeholder="0.00" autocomplete="off" required></div>
+<div class="field"><label for="accountSelect">付款 / 收款账户</label><select id="accountSelect" required></select></div>
+<div class="field"><label>选择分类</label><div class="categorygrid" id="categoryGrid"></div></div>
+<div class="field"><label for="dateInput">日期</label><input id="dateInput" type="date" required></div>
+<div class="field"><label for="noteInput">备注（选填）</label><input id="noteInput" maxlength="100" placeholder="例如：午餐、地铁"></div>
+<button class="primary" type="submit">保存账单</button></form></dialog>
+<div class="toast" id="toast" role="status"></div>
+<script>
+const $=id=>document.getElementById(id);
+const expenseCats=[["餐饮","🍜"],["交通","🚇"],["购物","🛍️"],["住房","🏠"],["娱乐","🎮"],["医疗","💊"],["教育","📚"],["日用","🧻"],["旅行","✈️"],["其他","◈"]];
+const incomeCats=[["工资","💼"],["奖金","🎁"],["兼职","🧑‍💻"],["理财","📈"],["红包","🧧"],["其他","◈"]];
+const STORAGE_KEY="jizhang.web.transactions.v1";
+const ACCOUNT_KEY="jizhang.web.accounts.v1";
+const DEFAULT_ACCOUNTS=[{id:"wechat",name:"微信零钱",type:"wechat",icon:"💚",initialBalance:0},{id:"alipay",name:"支付宝",type:"alipay",icon:"🔵",initialBalance:0},{id:"bank",name:"银行卡",type:"bank",icon:"💳",initialBalance:0},{id:"cash",name:"现金",type:"cash",icon:"💵",initialBalance:0}];
+let entries=[], accounts=[], month=new Date(), statsKind="expense", entryKind="expense", chosenCategory="餐饮", chosenAccount="wechat";
+const fmtMoney=n=>new Intl.NumberFormat("zh-CN",{style:"currency",currency:"CNY"}).format(Number(n)||0);
+const dateKey=d=>{const x=new Date(d);return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,"0")}-${String(x.getDate()).padStart(2,"0")}`};
+const monthKey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
+const monthName=d=>`${d.getFullYear()}年${d.getMonth()+1}月`;
+const currentMonthEntries=()=>entries.filter(e=>e.date.slice(0,7)===monthKey(month)).sort((a,b)=>b.date.localeCompare(a.date)||b.created-b.created);
+function persist(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(entries));localStorage.setItem(ACCOUNT_KEY,JSON.stringify(accounts));return true}catch(e){toast("保存失败：浏览器存储空间可能不足");return false}}
+function load(){
+ try{const data=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");if(Array.isArray(data))entries=data.filter(validEntry)}catch(e){entries=[]}
+ try{const saved=JSON.parse(localStorage.getItem(ACCOUNT_KEY)||"null");accounts=Array.isArray(saved)?saved.filter(a=>a&&typeof a.id==="string"&&typeof a.name==="string"&&Number.isFinite(Number(a.initialBalance))):[];}catch(e){accounts=[]}
+ if(!accounts.length)accounts=DEFAULT_ACCOUNTS.map(a=>({...a}));
+ // Preserve older transactions without assigning them to an arbitrary payment account.
+ const hasLegacy=entries.some(e=>!e.accountId);
+ if(hasLegacy){let legacy=accounts.find(a=>a.id==="legacy");if(!legacy){legacy={id:"legacy",name:"历史账单（未指定）",type:"legacy",icon:"🧾",initialBalance:0};accounts.push(legacy)}entries.forEach(e=>{if(!e.accountId)e.accountId="legacy"});}
+ entries.forEach(e=>{if(e.accountId&&!accounts.some(a=>a.id===e.accountId))e.accountId=accounts[0]?.id||"wechat"});
+}
+function validEntry(e){return e&&typeof e.id==="string"&&Number.isFinite(Number(e.amount))&&Number(e.amount)>0&&["expense","income"].includes(e.kind)&&typeof e.category==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(e.date)}
+function toast(msg){const el=$("toast");el.textContent=msg;el.style.display="block";clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.style.display="none",2400)}
+function accountById(id){return accounts.find(a=>a.id===id)}
+function accountBalance(a){return Number(a.initialBalance||0)+entries.filter(e=>e.accountId===a.id).reduce((sum,e)=>sum+(e.kind==="income"?1:-1)*Number(e.amount),0)}
+function renderAccountSelect(){const sel=$("accountSelect");const prior=sel.value||chosenAccount;sel.innerHTML=accounts.map(a=>`<option value="${escapeAttr(a.id)}">${a.icon||"💼"} ${escapeHtml(a.name)}</option>`).join("");chosenAccount=accounts.some(a=>a.id===prior)?prior:(accounts[0]?.id||"");sel.value=chosenAccount;}
+function escapeAttr(s){return String(s).replace(/&/g,"&amp;").replace(/\"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+function renderAccounts(){const host=$("accountList");$("accountCount").textContent=`${accounts.length} 个账户`;$("accountsTotal").textContent=fmtMoney(accounts.reduce((sum,a)=>sum+accountBalance(a),0));host.innerHTML="";if(!accounts.length){host.innerHTML='<div class="empty">还没有账户，请添加一个账户。</div>';return}accounts.forEach(a=>{const count=entries.filter(e=>e.accountId===a.id).length;const card=document.createElement("article");card.className="account-card";const icon=document.createElement("div");icon.className="account-icon";icon.textContent=a.icon||"💼";const main=document.createElement("div");main.className="account-main";const name=document.createElement("div");name.className="account-name";name.textContent=a.name;const meta=document.createElement("div");meta.className="account-meta";meta.textContent=`初始 ${fmtMoney(a.initialBalance)} · ${count} 笔关联账单`;main.append(name,meta);const right=document.createElement("div");right.style.minWidth="95px";const balance=document.createElement("div");balance.className="account-balance";balance.textContent=fmtMoney(accountBalance(a));const actions=document.createElement("div");actions.className="account-actions";const edit=document.createElement("button");edit.className="tinybtn";edit.textContent="编辑";edit.onclick=()=>editAccount(a.id);actions.append(edit);if(a.type!=="legacy"){const del=document.createElement("button");del.className="tinybtn";del.textContent="删除";del.onclick=()=>deleteAccount(a.id);actions.append(del)}right.append(balance,actions);card.append(icon,main,right);host.append(card)})}
+function addAccount(){const name=prompt("账户名称，例如：招商银行卡、微信、支付宝");if(name===null)return;const clean=name.trim();if(!clean){toast("账户名称不能为空");return}if(accounts.some(a=>a.name.toLowerCase()===clean.toLowerCase())){toast("已有同名账户");return}const raw=prompt("该账户的初始余额是多少？\n填写开始记账时账户已有的金额，可填 0。","0");if(raw===null)return;const amount=Number(raw.trim().replace(/,/g,""));if(!Number.isFinite(amount)||amount<0){toast("请输入有效的非负初始余额");return}const id=crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random();const icon=/微信/.test(clean)?"💚":/支付宝/.test(clean)?"🔵":/银行|卡/.test(clean)?"💳":/现金/.test(clean)?"💵":"💼";accounts.push({id,name:clean,type:"custom",icon,initialBalance:Math.round(amount*100)/100});chosenAccount=id;persist();renderAccounts();renderAccountSelect();toast("账户已添加")}
+function editAccount(id){const a=accountById(id);if(!a)return;const name=prompt("修改账户名称：",a.name);if(name===null)return;if(!name.trim()){toast("账户名称不能为空");return}if(accounts.some(x=>x.id!==id&&x.name.toLowerCase()===name.trim().toLowerCase())){toast("已有同名账户");return}const raw=prompt("修改初始余额（不是当前余额）：",String(a.initialBalance));if(raw===null)return;const amount=Number(raw.trim().replace(/,/g,""));if(!Number.isFinite(amount)||amount<0){toast("请输入有效的非负初始余额");return}a.name=name.trim();a.initialBalance=Math.round(amount*100)/100;persist();renderAccounts();renderAccountSelect();render();toast("账户信息已更新")}
+function deleteAccount(id){const a=accountById(id);if(!a)return;if(entries.some(e=>e.accountId===id)){toast("该账户有账单，请先删除或更改关联账单后再删除");return}if(accounts.length<=1){toast("至少保留一个账户");return}if(confirm(`确定删除账户“${a.name}”吗？`)){accounts=accounts.filter(x=>x.id!==id);if(chosenAccount===id)chosenAccount=accounts[0].id;persist();renderAccounts();renderAccountSelect();toast("账户已删除")}}
+function render(){
+ $("monthLabel").textContent=monthName(month);$("statsMonthLabel").textContent=monthName(month);
+ const list=currentMonthEntries(), inc=list.filter(e=>e.kind==="income").reduce((s,e)=>s+Number(e.amount),0), exp=list.filter(e=>e.kind==="expense").reduce((s,e)=>s+Number(e.amount),0);
+ $("balance").textContent=fmtMoney(inc-exp);$("income").textContent=fmtMoney(inc);$("expense").textContent=fmtMoney(exp);$("count").textContent=`${list.length} 笔`;
+ const host=$("transactions");host.innerHTML="";
+ if(!list.length){host.innerHTML='<div class="empty"><div class="emoji">🧾</div><strong>还没有账单</strong><p>点击上方按钮，记下第一笔收支。</p></div>'}
+ else{
+  let lastDate="";
+  for(const e of list){
+   if(e.date!==lastDate){const h=document.createElement("div");h.className="dayhead";h.textContent=prettyDate(e.date);host.appendChild(h);lastDate=e.date}
+   const row=document.createElement("div");row.className="item";
+   const icon=(allCats().find(c=>c[0]===e.category)||["","◈"])[1];
+   const left=document.createElement("div");left.className="caticon";left.textContent=icon;
+   const main=document.createElement("div");main.className="itemmain";
+   const title=document.createElement("div");title.className="itemtitle";title.textContent=e.category;
+   const note=document.createElement("div");note.className="itemnote";const acct=accountById(e.accountId);note.textContent=[acct?.name||"未指定账户",e.note||(e.kind==="income"?"收入":"支出")].filter(Boolean).join(" · ");
+   main.append(title,note);
+   const right=document.createElement("div");right.className="amount "+(e.kind==="income"?"income":"expense");right.textContent=(e.kind==="income"?"+":"−")+fmtMoney(e.amount);
+   row.append(left,main,right);row.addEventListener("click",()=>{if(confirm(`删除这笔账单？\n${e.date} · ${e.category} · ${fmtMoney(e.amount)}`)){entries=entries.filter(x=>x.id!==e.id);persist();render();toast("账单已删除")}});
+   row.title="轻点删除这笔账单";host.appendChild(row);
+  }
+ }
+ renderStats();renderAccounts();
+}
+function prettyDate(s){const d=new Date(s+"T12:00:00"),today=dateKey(new Date()),yesterday=dateKey(new Date(Date.now()-86400000));if(s===today)return "今天";if(s===yesterday)return "昨天";return `${d.getMonth()+1}月${d.getDate()}日 · ${["周日","周一","周二","周三","周四","周五","周六"][d.getDay()]}`}
+function allCats(){return [...expenseCats,...incomeCats]}
+function renderStats(){
+ const list=entries.filter(e=>e.date.slice(0,7)===monthKey(month)&&e.kind===statsKind);
+ const total=list.reduce((s,e)=>s+Number(e.amount),0);$("statsTotal").textContent=fmtMoney(total);
+ $("statsExpense").classList.toggle("selected",statsKind==="expense");$("statsIncome").classList.toggle("selected",statsKind==="income");
+ const grouped={};list.forEach(e=>grouped[e.category]=(grouped[e.category]||0)+Number(e.amount));
+ const rows=Object.entries(grouped).sort((a,b)=>b[1]-a[1]);const host=$("categoryStats");host.innerHTML="";
+ if(!rows.length){host.innerHTML='<div class="empty"><div class="emoji">📊</div>这个月还没有分类数据</div>';return}
+ rows.forEach(([name,value])=>{const row=document.createElement("div");row.className="barrow";const label=document.createElement("div");label.className="barlabel";const n=document.createElement("span");n.textContent=name;const v=document.createElement("strong");v.textContent=`${fmtMoney(value)} · ${Math.round(value/total*100)}%`;label.append(n,v);const track=document.createElement("div");track.className="track";const fill=document.createElement("div");fill.className="fill";fill.style.width=`${value/total*100}%`;track.append(fill);row.append(label,track);host.append(row)});
+}
+function openAdd(kind="expense"){
+ try {
+  entryKind=kind;
+  chosenCategory=(kind==="expense"?expenseCats:incomeCats)[0][0];
+  $("amountInput").value=""; $("noteInput").value=""; $("dateInput").value=dateKey(new Date());
+  setKind(kind); renderCategories(); renderAccountSelect();
+  const dialog=$("addDialog");
+  if(typeof dialog.showModal==="function"){if(!dialog.open)dialog.showModal();}
+  else {dialog.setAttribute("open","");dialog.style.display="block";dialog.style.position="fixed";dialog.style.inset="auto 0 0 0";dialog.style.zIndex="20";}
+  setTimeout(()=>{try{$("amountInput").focus({preventScroll:true})}catch(e){}},180);
+ } catch(err) { console.error("openAdd failed",err); toast("打开记账窗口失败，请刷新页面后重试"); }
+}
+window.openAdd = openAdd;
+function setKind(kind){entryKind=kind;$("typeExpense").classList.toggle("selected",kind==="expense");$("typeIncome").classList.toggle("selected",kind==="income")}
+function renderCategories(){const grid=$("categoryGrid");grid.innerHTML="";(entryKind==="expense"?expenseCats:incomeCats).forEach(([name,icon])=>{const b=document.createElement("button");b.type="button";b.className="category"+(name===chosenCategory?" selected":"");const i=document.createElement("span");i.textContent=icon;b.append(i,document.createTextNode(name));b.addEventListener("click",()=>{chosenCategory=name;renderCategories()});grid.append(b)})}
+function changeMonth(delta){month=new Date(month.getFullYear(),month.getMonth()+delta,1);render()}
+document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".view").forEach(x=>x.classList.toggle("active",x.id==="view-"+b.dataset.tab));if(b.dataset.tab==="accounts")renderAccounts();}));
+$("addAccountBtn").onclick=addAccount;$("accountSelect").addEventListener("change",e=>chosenAccount=e.target.value);
+$("topAdd").onclick=()=>openAdd();$("quickExpense").onclick=()=>openAdd("expense");$("quickIncome").onclick=()=>openAdd("income");
+$("prevMonth").onclick=$("statsPrev").onclick=()=>changeMonth(-1);$("nextMonth").onclick=$("statsNext").onclick=()=>changeMonth(1);
+$("typeExpense").onclick=()=>{setKind("expense");chosenCategory=expenseCats[0][0];renderCategories()};$("typeIncome").onclick=()=>{setKind("income");chosenCategory=incomeCats[0][0];renderCategories()};
+$("closeDialog").onclick=()=>{const d=$("addDialog");if(typeof d.close==="function")d.close();else{d.removeAttribute("open");d.style.display="";d.style.position="";d.style.inset="";d.style.zIndex=""}};
+$("addDialog").addEventListener("click",e=>{if(e.target===$("addDialog")){const d=$("addDialog");if(typeof d.close==="function")d.close();else{d.removeAttribute("open");d.style.display="";d.style.position="";d.style.inset="";d.style.zIndex=""}}});
+$("entryForm").addEventListener("submit",e=>{e.preventDefault();const raw=$("amountInput").value.trim().replace(/，/g,".").replace(/,/g,".");const amount=Number(raw);if(!Number.isFinite(amount)||amount<=0){toast("请输入大于 0 的有效金额");return}const date=$("dateInput").value;if(!date){toast("请选择日期");return}entries.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random(),amount:Math.round(amount*100)/100,kind:entryKind,accountId:$("accountSelect").value,category:chosenCategory,note:$("noteInput").value.trim(),date,created:Date.now()});persist();const d=$("addDialog");if(typeof d.close==="function")d.close();else{d.removeAttribute("open");d.style.display="";d.style.position="";d.style.inset="";d.style.zIndex=""}render();toast("已保存到本机")});
+$("statsExpense").onclick=()=>{statsKind="expense";renderStats()};$("statsIncome").onclick=()=>{statsKind="income";renderStats()};
+function download(name,content,type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+$("exportBtn").onclick=()=>{const rows=[["日期","类型","分类","账户","金额(CNY)","备注"],...entries.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(e=>[e.date,e.kind==="income"?"收入":"支出",e.category,accountById(e.accountId)?.name||"未指定账户",Number(e.amount).toFixed(2),e.note])];const csv="\ufeff"+rows.map(r=>r.map(v=>`"${String(v??"").replace(/"/g,'""')}"`).join(",")).join("\r\n");download("记账账单.csv",csv,"text/csv;charset=utf-8");toast("已生成 CSV 文件")};
+$("backupBtn").onclick=()=>{download("记账备份-"+dateKey(new Date())+".json",JSON.stringify({version:2,exportedAt:new Date().toISOString(),entries,accounts},null,2),"application/json");toast("备份已生成")};
+$("importBtn").onclick=()=>$("importFile").click();
+$("importFile").onchange=async e=>{const file=e.target.files[0];if(!file)return;try{const data=JSON.parse(await file.text());const arr=Array.isArray(data)?data:data.entries;if(!Array.isArray(arr)||!arr.every(validEntry))throw new Error("format");if(confirm(`导入 ${arr.length} 笔账单？\n选择“确定”将与当前账单合并；若备份包含账户，也会导入账户。`)){if(Array.isArray(data.accounts)&&data.accounts.every(a=>a&&typeof a.id==="string"&&typeof a.name==="string"&&Number.isFinite(Number(a.initialBalance)))){const amap=new Map(accounts.map(a=>[a.id,a]));data.accounts.forEach(a=>amap.set(a.id,a));accounts=[...amap.values()]}const map=new Map(entries.map(x=>[x.id,x]));arr.forEach(x=>{if(!x.accountId)x.accountId=accounts[0]?.id||"wechat";map.set(x.id,x)});entries=[...map.values()];persist();render();renderAccountSelect();toast("备份已导入")}}catch(err){toast("备份文件无效或格式不受支持")}e.target.value=""};
+$("clearBtn").onclick=()=>{if(confirm("确定清空全部账单吗？此操作无法撤销。建议先导出备份。")){entries=[];persist();render();toast("已清空账单")}};
+load();renderAccountSelect();render();renderAccounts();persist();
+if("serviceWorker" in navigator && location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});
+</script>
+
+<script>
+// Failsafe click handlers for the three primary entry points. Capture phase ensures
+// the buttons still respond even if a browser's earlier inline initialization fails.
+document.addEventListener("click", function(e) {
+  const target = e.target && e.target.closest ? e.target.closest("#topAdd, #quickExpense, #quickIncome") : null;
+  if (!target) return;
+  e.preventDefault();
+  try {
+    const kind = target.id === "quickIncome" ? "income" : "expense";
+    const dialog = document.getElementById("addDialog");
+    if (!dialog) { alert("记账窗口未加载，请刷新页面重试"); return; }
+    if (typeof window.openAdd === "function") { window.openAdd(kind); return; }
+    // Fallback initialization when main script could not expose its function.
+    const amount = document.getElementById("amountInput");
+    const date = document.getElementById("dateInput");
+    const form = document.getElementById("entryForm");
+    if (!form || !amount || !date) { alert("记账功能加载不完整，请重新发布页面后刷新"); return; }
+    const income = document.getElementById("typeIncome");
+    const expense = document.getElementById("typeExpense");
+    if (income && expense) {
+      income.classList.toggle("selected", kind === "income");
+      expense.classList.toggle("selected", kind === "expense");
+    }
+    amount.value = "";
+    date.value = new Date().toISOString().slice(0,10);
+    if (typeof dialog.showModal === "function") dialog.showModal();
+    else { dialog.setAttribute("open", ""); dialog.style.display = "block"; dialog.style.position = "fixed"; dialog.style.inset = "auto 0 0 0"; dialog.style.zIndex = "9999"; }
+  } catch (err) { console.error(err); alert("打开记账窗口失败，请刷新页面后重试"); }
+}, true);
+</script>
+<script>
+// Disable pinch/double-tap page zoom on iOS; normal scrolling and taps remain available.
+document.addEventListener('gesturestart', function(e){ e.preventDefault(); }, {passive:false});
+document.addEventListener('gesturechange', function(e){ e.preventDefault(); }, {passive:false});
+document.addEventListener('gestureend', function(e){ e.preventDefault(); }, {passive:false});
+</script>
+</body></html>
