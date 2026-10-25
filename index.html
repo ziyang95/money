@@ -12,6 +12,19 @@
 <link rel="apple-touch-icon" href="./icon-192.png">
 <title>记账</title>
 <style>
+/* iOS Safari: suppress long-press text selection and the system callout menu. */
+html, body, body * {
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+}
+/* Keep form controls usable for normal typing while preventing text selection. */
+input, textarea, select, [contenteditable="true"] {
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+}
+
 :root{color-scheme:light dark;--bg:#f4f5fa;--card:#fff;--text:#171923;--muted:#737789;--line:#e6e8ef;--accent:#5655d9;--accent2:#7775f3;--good:#12805c;--bad:#c45243;--soft:#eeefff;--shadow:0 8px 28px rgba(31,35,65,.07)}
 @media(prefers-color-scheme:dark){:root{--bg:#111218;--card:#1b1d26;--text:#f4f5fb;--muted:#a1a5b6;--line:#303341;--accent:#a5a3ff;--accent2:#c0beff;--good:#60d6a6;--bad:#ff9386;--soft:#2a2945;--shadow:0 8px 28px rgba(0,0,0,.2)}}
 *{box-sizing:border-box}html,body{width:100%;max-width:100%;overflow-x:clip;overscroll-behavior-x:none}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC",sans-serif;-webkit-font-smoothing:antialiased}
