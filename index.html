@@ -244,4 +244,40 @@ document.addEventListener('gesturestart', function(e){ e.preventDefault(); }, {p
 document.addEventListener('gesturechange', function(e){ e.preventDefault(); }, {passive:false});
 document.addEventListener('gestureend', function(e){ e.preventDefault(); }, {passive:false});
 </script>
+
+<script>
+// Block pasting website addresses/URLs into form fields, while allowing ordinary text paste.
+(function(){
+  const urlLike = /(?:https?:\/\/|ftp:\/\/|www\.|\b[a-z0-9-]+\.(?:com|net|org|io|cn|co|app|dev|gov|edu|me|info|biz|xyz|site|top|store|tech)\b)/i;
+  document.addEventListener('paste', function(e){
+    const field=e.target;
+    if(!field || !field.matches || !field.matches('input:not([type="file"]), textarea')) return;
+    const clip=e.clipboardData;
+    if(!clip) return;
+    const text=clip.getData('text');
+    if(text && urlLike.test(text)){
+      e.preventDefault();
+      if(typeof window.toast==='function') window.toast('不允许粘贴网址，请手动输入普通备注');
+      else { const t=document.getElementById('toast'); if(t){t.textContent='不允许粘贴网址';t.style.display='block';setTimeout(()=>t.style.display='none',2200);} }
+    }
+  }, true);
+})();
+</script>
+<script>
+// Re-check for a newer deployed version whenever the PWA is reopened or becomes visible.
+if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+  let reloadingForUpdate = false;
+  navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then(reg => {
+    const check = () => { if (navigator.onLine) reg.update().catch(()=>{}); };
+    check();
+    window.addEventListener('pageshow', check);
+    window.addEventListener('focus', check);
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') check(); });
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!reloadingForUpdate) { reloadingForUpdate = true; location.reload(); }
+    });
+  }).catch(()=>{});
+}
+</script>
+
 </body></html>
