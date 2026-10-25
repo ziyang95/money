@@ -263,6 +263,24 @@ document.addEventListener('gestureend', function(e){ e.preventDefault(); }, {pas
   }, true);
 })();
 </script>
+
+<script>
+// Disable text selection and clipboard operations throughout the bookkeeping PWA.
+// Typing into inputs remains available; copy/cut/paste shortcuts and context-menu clipboard actions are blocked.
+(function(){
+  const stop = e => { e.preventDefault(); };
+  ['copy','cut','paste','contextmenu'].forEach(type => document.addEventListener(type, stop, true));
+  document.addEventListener('keydown', function(e){
+    const key=(e.key||'').toLowerCase();
+    if ((e.ctrlKey || e.metaKey) && ['c','x','v','insert'].includes(key)) e.preventDefault();
+    if (e.shiftKey && (key==='insert')) e.preventDefault();
+  }, true);
+  document.addEventListener('selectstart', function(e){
+    if (!(e.target && e.target.matches && e.target.matches('input,textarea,[contenteditable="true"]'))) e.preventDefault();
+  }, true);
+})();
+</script>
+
 <script>
 // Re-check for a newer deployed version whenever the PWA is reopened or becomes visible.
 if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
