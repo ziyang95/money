@@ -1,4 +1,4 @@
-const CACHE="jizhang-web-v5";
+const CACHE="jizhang-web-v6";
 const FILES=["./","./index.html","./manifest.webmanifest","./icon-192.png","./icon-512.png"];
 self.addEventListener("install",event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES)).then(()=>self.skipWaiting()))});
 self.addEventListener("activate",event=>{event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k.startsWith("jizhang-web-")&&k!==CACHE).map(k=>caches.delete(k)));await self.clients.claim()})())});
