@@ -191,7 +191,8 @@ function render(){
    const title=document.createElement("div");title.className="itemtitle";title.textContent=e.category;
    const note=document.createElement("div");note.className="itemnote";const acct=accountById(e.accountId);const savedAt=new Date(Number(e.created)||Date.now());const stamp=`保存于 ${savedAt.getFullYear()}-${String(savedAt.getMonth()+1).padStart(2,"0")}-${String(savedAt.getDate()).padStart(2,"0")} ${String(savedAt.getHours()).padStart(2,"0")}:${String(savedAt.getMinutes()).padStart(2,"0")}:${String(savedAt.getSeconds()).padStart(2,"0")}`;note.textContent=[acct?.name||"未指定账户",e.note||(e.kind==="income"?"收入":"支出"),stamp].filter(Boolean).join(" · ");
    main.append(title,note);
-   const right=document.createElement("div");right.className="amount "+(e.kind==="income"?"income":"expense");right.textContent=(e.kind==="income"?"+":"−")+fmtMoney(e.amount);
+   const amount=document.createElement("div");amount.className="amount "+(e.kind==="income"?"income":"expense");amount.textContent=(e.kind==="income"?"+":"−")+fmtMoney(e.amount);
+   const right=document.createElement("div");right.className="entry-side";const edit=document.createElement("button");edit.type="button";edit.className="tinybtn";edit.textContent="修改";edit.setAttribute("aria-label",`修改${e.date}${e.category}账单`);edit.addEventListener("click",event=>{event.stopPropagation();openEditEntry(e.id)});right.append(amount,edit);
    row.append(left,main,right);row.addEventListener("click",()=>{if(confirm(`删除这笔账单？\n${e.date} · ${e.category} · ${fmtMoney(e.amount)}`)){entries=entries.filter(x=>x.id!==e.id);persist();render();toast("账单已删除")}});
    row.title="轻点删除这笔账单";host.appendChild(row);
   }
