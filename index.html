@@ -27,9 +27,9 @@ input, textarea, select, [contenteditable="true"] {
 
 :root{color-scheme:light dark;--bg:#f4f5fa;--card:#fff;--text:#171923;--muted:#737789;--line:#e6e8ef;--accent:#5655d9;--accent2:#7775f3;--good:#12805c;--bad:#c45243;--soft:#eeefff;--shadow:0 8px 28px rgba(31,35,65,.07)}
 @media(prefers-color-scheme:dark){:root{--bg:#111218;--card:#1b1d26;--text:#f4f5fb;--muted:#a1a5b6;--line:#303341;--accent:#a5a3ff;--accent2:#c0beff;--good:#60d6a6;--bad:#ff9386;--soft:#2a2945;--shadow:0 8px 28px rgba(0,0,0,.2)}}
-*{box-sizing:border-box}html,body{width:100%;max-width:100%;overflow-x:clip;overscroll-behavior-x:none}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC",sans-serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}html,body{width:100%;max-width:100%;height:100%;overflow:hidden;overscroll-behavior:none}body{position:fixed;inset:0;margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC",sans-serif;-webkit-font-smoothing:antialiased}
 button,input,select,textarea{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent2);outline-offset:2px}
-.app{max-width:560px;min-height:100dvh;margin:auto;padding:env(safe-area-inset-top) 16px calc(90px + env(safe-area-inset-bottom))}
+.app{max-width:560px;min-height:100dvh;height:100%;margin:auto;padding:env(safe-area-inset-top) 16px calc(90px + env(safe-area-inset-bottom));overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 header{display:flex;align-items:center;justify-content:space-between;padding:15px 2px 16px}.brand{font-size:27px;font-weight:800;letter-spacing:-.7px}.brand small{display:block;color:var(--muted);font-size:12px;font-weight:500;letter-spacing:0;margin-top:3px}
 .iconbtn{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:14px;width:44px;height:44px;font-size:20px}
 .monthbar{display:flex;align-items:center;justify-content:space-between;margin:2px 0 13px}.monthbar button{border:0;background:transparent;color:var(--text);padding:8px 10px;font-size:20px}.monthlabel{font-weight:700;font-size:15px}
