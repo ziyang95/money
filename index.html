@@ -156,7 +156,7 @@ function updateAmountPreview(){const raw=$("amountInput").value.trim();const el=
 const dateKey=d=>{const x=new Date(d);return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,"0")}-${String(x.getDate()).padStart(2,"0")}`};
 const monthKey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
 const monthName=d=>`${d.getFullYear()}年${d.getMonth()+1}月`;
-const currentMonthEntries=()=>entries.filter(e=>e.date.slice(0,7)===monthKey(month)).sort((a,b)=>b.date.localeCompare(a.date)||b.created-b.created);
+const currentMonthEntries=()=>entries.filter(e=>e.date.slice(0,7)===monthKey(month)).sort((a,b)=>b.date.localeCompare(a.date)||Number(b.created||0)-Number(a.created||0));
 function persist(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(entries));localStorage.setItem(ACCOUNT_KEY,JSON.stringify(accounts));localStorage.setItem(TRANSFER_KEY,JSON.stringify(transfers));return true}catch(e){toast("保存失败：浏览器存储空间可能不足");return false}}
 function load(){
  try{const data=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");if(Array.isArray(data))entries=data.filter(validEntry).map((e,i)=>({...e,created:Number(e.created)||new Date(e.date+"T12:00:00").getTime()+i}))}catch(e){entries=[]}
