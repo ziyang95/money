@@ -172,7 +172,7 @@ let entries=[], transfers=[], accounts=[], month=new Date(), statsKind="expense"
 const fmtMoney=n=>new Intl.NumberFormat("zh-CN",{style:"currency",currency:"CNY"}).format(Number(n)||0);
 function evalAmount(input){let s=String(input??"").trim().replace(/[，,]/g,".").replace(/[×✕xX]/g,"*").replace(/[÷]/g,"/").replace(/[−–—]/g,"-").replace(/\s+/g,"").replace(/[+\-*/]+$/,"");if(!s)return NaN;if(!/^[\d.+\-*/()]+$/.test(s))return NaN;try{const v=Function('"use strict";return('+s+')')();return Number.isFinite(v)&&v>0?Math.round(v*100)/100:NaN}catch(e){return NaN}}
 function isExpression(s){return /[+\-*/×÷()]/.test(String(s||""))}
-function updateAmountPreview(){const raw=$("amountInput").value.trim();const el=$("amountPreview");const n=raw.length;$("amountInput").style.fontSize=(n<=10?31:n<=16?25:n<=22?20:n<=30?17:15)+"px";if(!isExpression(raw)){el.textContent="";el.classList.remove("bad");return}const v=evalAmount(raw);el.textContent=Number.isFinite(v)?`= ${fmtMoney(v)}`:"算式无效，或结果需大于 0";el.classList.toggle("bad",!Number.isFinite(v))}
+function updateAmountPreview(){const raw=$("amountInput").value.trim();const el=$("amountPreview");const n=raw.length;$("amountInput").style.fontSize=(n<=10?31:n<=16?25:n<=22?20:n<=30?17:n<=40?14:12)+"px";if(!isExpression(raw)){el.textContent="";el.classList.remove("bad");return}const v=evalAmount(raw);el.textContent=Number.isFinite(v)?`= ${fmtMoney(v)}`:"算式无效，或结果需大于 0";el.classList.toggle("bad",!Number.isFinite(v))}
 const dateKey=d=>{const x=new Date(d);return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,"0")}-${String(x.getDate()).padStart(2,"0")}`};
 const monthKey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
 const monthName=d=>`${d.getFullYear()}年${d.getMonth()+1}月`;
@@ -306,7 +306,7 @@ $("amountInput").addEventListener("input",updateAmountPreview);
   else if(k==="clear") v="";
   else if(k==="done"){const n=evalAmount(v);if(Number.isFinite(n))v=String(n);field.value=v;updateAmountPreview();hide();return}
   else if(k==="."){const tail=v.split(/[+\-*/×÷−]/).pop();if(tail.includes("."))return;v+=(tail===""?"0":"")+"."}
-  else {if(v.length>=40)return;v+=k}
+  else {v+=k}
   field.value=v; updateAmountPreview();
   field.scrollLeft=field.scrollWidth;
  });
